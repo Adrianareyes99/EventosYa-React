@@ -1,16 +1,82 @@
-# React + Vite
+#EventosYa - Plataforma de Venta de Boletos
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#Descripción
+Nuestra aplicacion de eventos ya es una aplicacon web que desarrolle con React que simula la venta de boletos para eventos en El Salvador.
+Nos permite consultar eventos, seleccionar nuestros boletos, realizar compras simuladas y visualizar un boleto digital.
 
-Currently, two official plugins are available:
+##Tecnologías utilizadas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-React
 
-## React Compiler
+-Vite
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-JavaScript y JSX
 
-## Expanding the ESLint configuration
+-HTML y CSS
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-localStorage
+
+##dInstalación y ejecución
+
+Para ejecutar el proyecto es necesario tener Node.js instalado.
+
+Abrir una terminal dentro de la carpeta del proyecto y ejecutar:
+
+npm install
+npm run dev
+
+Después abrir la dirección local que muestra la terminal.
+
+##Funcionalidades
+
+Registro e inicio de sesión simulados.
+
+Catálogo de eventos.
+
+Selección de zonas y cantidad de boletos.
+
+Carrito de compras.
+
+Pago simulado.
+
+Boleto digital con código QR.
+
+Actualización de boletos disponibles.
+
+##Organización del proyecto
+
+components: componentes reutilizables.
+
+pages: pantallas de la aplicación.
+
+data: información simulada de los eventos.
+
+App.jsx: navegación y estado principal.
+
+App.css: estilos de la aplicación.
+
+##Estado y persistencia
+
+Se utiliza useState para manejar información como el usuario, las compras y los eventos.
+
+Se utiliza useEffect junto con localStorage para conservar la sesión, las compras y la disponibilidad de boletos.
+
+##Datos simulados
+
+La aplicación utiliza ocho eventos de ejemplo con información de fechas, lugares, categorías, precios y disponibilidad.
+
+No utiliza base de datos ni pasarela de pago real.
+
+##Diseño responsive
+
+La aplicación se adapta a tres tamaños de pantalla que nos pidieron:
+
+Celular: 375 px.
+
+Tableta: 768 px.
+
+Computadora: 1440 px.
+
+##Limitaciones
+
+El inicio de sesión y los pagos son simulados. Los datos se almacenan localmente en el navegador y el código QR no verifica entradas reales. Es importante que lo dejemos comprendido que todo es simulado.
