@@ -1,82 +1,90 @@
-#EventosYa - Plataforma de Venta de Boletos
 
-#Descripción
-Nuestra aplicacion de eventos ya es una aplicacon web que desarrolle con React que simula la venta de boletos para eventos en El Salvador.
-Nos permite consultar eventos, seleccionar nuestros boletos, realizar compras simuladas y visualizar un boleto digital.
+# EventosYa - Plataforma de Venta de Boletos
 
-##Tecnologías utilizadas
+## Descripción
 
--React
+EventosYa es una aplicación web desarrollada con React que simula la venta de boletos para eventos en El Salvador.
 
--Vite
+Permite explorar eventos, seleccionar boletos, realizar compras simuladas y visualizar un boleto digital.
 
--JavaScript y JSX
+En esta tercera entrega agregamos nuevas funcionalidades como React Router, Context, useReducer, una API falsa, un panel administrativo y configuración PWA.
 
--HTML y CSS
+## Tecnologías utilizadas
 
--localStorage
+- React
+- Vite
+- JavaScript y JSX
+- HTML y CSS
+- React Router
+- Context API
+- useReducer
+- localStorage
+- vite-plugin-pwa
+- GitHub Actions y GitHub Pages
 
-##dInstalación y ejecución
+## Instalación y ejecución
 
-Para ejecutar el proyecto es necesario tener Node.js instalado.
+Es necesario tener Node.js instalado.
 
 Abrir una terminal dentro de la carpeta del proyecto y ejecutar:
 
 npm install
+
 npm run dev
 
 Después abrir la dirección local que muestra la terminal.
 
-##Funcionalidades
+## Funcionalidades
 
-Registro e inicio de sesión simulados.
+- Registro e inicio de sesión simulados.
+- Catálogo de eventos.
+- Selección de zonas y cantidad de boletos.
+- Carrito de compras.
+- Pago simulado.
+- Confirmación de compra.
+- Boleto digital.
+- Navegación mediante React Router.
+- Estado compartido utilizando Context y useReducer.
+- Almacenamiento local de información.
+- API falsa con operaciones asíncronas.
+- Panel administrativo para crear, consultar, editar y eliminar eventos.
+- Configuración PWA con service worker.
+- Publicación mediante GitHub Pages.
 
-Catálogo de eventos.
+## Panel administrativo
 
-Selección de zonas y cantidad de boletos.
+Para acceder al panel administrativo se utiliza una cuenta de demostración.
 
-Carrito de compras.
+Correo: admin@eventosya.com
 
-Pago simulado.
+El panel permite consultar, agregar, modificar y eliminar eventos.
 
-Boleto digital con código QR.
+La autenticación es simulada y no debe utilizarse como mecanismo de seguridad real.
 
-Actualización de boletos disponibles.
+## PWA
 
-##Organización del proyecto
+EventosYa cuenta con una configuración PWA mediante vite-plugin-pwa.
 
-components: componentes reutilizables.
+Se genera un manifest y un service worker para almacenar recursos de la aplicación.
 
-pages: pantallas de la aplicación.
+Se realizaron pruebas de instalación en una computadora.
 
-data: información simulada de los eventos.
+## Limitaciones
 
-App.jsx: navegación y estado principal.
+Este proyecto es una simulación académica.
 
-App.css: estilos de la aplicación.
+No utiliza una base de datos real ni procesa pagos reales.
 
-##Estado y persistencia
+La API falsa utiliza localStorage para guardar los eventos y los cambios son locales a cada navegador.
 
-Se utiliza useState para manejar información como el usuario, las compras y los eventos.
+El acceso administrativo es demostrativo.
 
-Se utiliza useEffect junto con localStorage para conservar la sesión, las compras y la disponibilidad de boletos.
+El funcionamiento sin conexión puede depender de los recursos previamente almacenados en caché.
 
-##Datos simulados
+## Publicación
 
-La aplicación utiliza ocho eventos de ejemplo con información de fechas, lugares, categorías, precios y disponibilidad.
+Aplicación web:
+https://adrianareyes99.github.io/EventosYa-React/
 
-No utiliza base de datos ni pasarela de pago real.
-
-##Diseño responsive
-
-La aplicación se adapta a tres tamaños de pantalla que nos pidieron:
-
-Celular: 375 px.
-
-Tableta: 768 px.
-
-Computadora: 1440 px.
-
-##Limitaciones
-
-El inicio de sesión y los pagos son simulados. Los datos se almacenan localmente en el navegador y el código QR no verifica entradas reales. Es importante que lo dejemos comprendido que todo es simulado.
+Repositorio:
+https://github.com/Adrianareyes99/EventosYa-React

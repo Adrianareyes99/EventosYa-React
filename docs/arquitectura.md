@@ -1,80 +1,106 @@
 
 # Arquitectura del proyecto EventosYa
 
-## 1. Descripción
+## 1. Descripción general
 
-EventosYa es una aplicación desarrollada con React que simula la venta de boletos para eventos en El Salvador.
+EventosYa es una aplicación web desarrollada con React y Vite que simula la venta de boletos para eventos en El Salvador.
 
-La aplicación permite consultar eventos, seleccionar boletos, realizar pagos simulados y obtener un boleto digital.
+La aplicación permite consultar eventos, seleccionar boletos, realizar pagos simulados y visualizar un boleto digital.
 
 ## 2. Organización del proyecto
 
-El proyecto está organizado en carpetas:
-
 - src/components: componentes reutilizables.
 - src/pages: pantallas de la aplicación.
-- src/data: datos simulados de los eventos.
-- src/utils: carpeta para funciones auxiliares.
-- public/capturas: imágenes de las pantallas.
-- App.jsx: controla las pantallas y los datos principales.
-- App.css: contiene los estilos.
+- src/data: información inicial de los eventos.
+- src/routes: configuración de React Router.
+- src/context: estado global con Context y useReducer.
+- src/api: funciones de la API falsa.
+- public: archivos públicos.
+- docs: documentación del proyecto.
 
-## 3. Componentes
+## 3. Componentes y pantallas
 
-Utilizamos los siguientes componentes:
+App.jsx es el componente principal y coordina las diferentes pantallas.
 
-- EventCard: muestra la información de cada evento.
-- SeleccionBoletos: permite seleccionar zona y cantidad.
-- Pago: contiene el formulario de pago simulado.
-- BoletoDigital: muestra la información del boleto y el QR.
-- Login: formulario de inicio de sesión.
-- Registro: formulario para registrar usuarios.
+EventCard muestra la información de cada evento.
 
-## 4. Manejo del estado
+SeleccionBoletos permite elegir zona y cantidad.
 
-Utilizamos useState para guardar y actualizar datos dentro de React.
+Pago contiene el formulario de pago simulado.
 
-Por ejemplo:
+BoletoDigital muestra la información de la compra.
 
-- usuario: guarda el correo del usuario.
-- pantalla: indica qué pantalla se muestra.
-- compra: guarda la información de los boletos seleccionados.
-- listaEventos: guarda los eventos y su disponibilidad.
+Login y Registro permiten simular el acceso de usuarios.
 
-## 5. Flujo de la aplicación
+Admin permite administrar los eventos mediante operaciones CRUD.
 
-El proceso principal funciona así:
+## 4. Navegación con React Router
 
-1. El usuario consulta los eventos.
-2. Selecciona un evento.
-3. Escoge la zona y cantidad de boletos.
-4. Revisa el carrito.
-5. Completa el pago simulado.
-6. Recibe la confirmación.
-7. Consulta su boleto digital.
+Utilizamos React Router para organizar las direcciones de la aplicación.
 
-## 6. Persistencia
+Las rutas principales implementadas son:
 
-Utilizamos localStorage para conservar:
+- /eventos
+- /eventos/:id
+- /carrito
+- /checkout
+- /boletos
+- /admin
 
-- La sesión del usuario.
-- La información del carrito.
-- La disponibilidad de los eventos.
+Las rutas utilizan App.jsx, que controla la pantalla mostrada según la dirección actual.
 
-También utilizamos useEffect para actualizar la información almacenada cuando cambian los datos.
+## 5. Context y useReducer
 
-## 7. Diseño responsive
+Creamos AppContext.jsx para compartir la información del usuario y la compra.
 
-Utilizamos CSS y media queries para adaptar la aplicación a tres tamaños:
+Utilizamos useReducer para controlar las siguientes acciones:
 
-- Celular: 375 px.
-- Tableta: 768 px.
-- Computadora: 1440 px.
+- INICIAR_SESION
+- CERRAR_SESION
+- GUARDAR_COMPRA
+- LIMPIAR_COMPRA
 
-## 8. Limitaciones
+También utilizamos localStorage para conservar datos entre recargas del navegador.
+
+## 6. API falsa
+
+Creamos eventosApi.js para simular consultas a un servidor.
+
+Utilizamos funciones asíncronas con async y await para consultar, agregar, actualizar y eliminar eventos.
+
+Los cambios se almacenan en localStorage.
+
+## 7. Panel administrativo
+
+El componente admin.jsx permite consultar, crear, modificar y eliminar eventos.
+
+Incluye un formulario para ingresar los datos del evento y una tabla con las operaciones disponibles.
+
+El acceso se restringe de forma demostrativa mediante un correo administrativo.
+
+## 8. PWA
+
+Configuramos vite-plugin-pwa en vite.config.js.
+
+La compilación genera un manifest y un service worker.
+
+Esto permite almacenar recursos de la aplicación y facilita su instalación como aplicación de escritorio.
+
+## 9. Publicación
+
+Utilizamos GitHub Actions para automatizar la compilación y publicación mediante GitHub Pages.
+
+Enlace:
+https://adrianareyes99.github.io/EventosYa-React/
+
+## 10. Limitaciones
 
 La aplicación es una simulación académica.
 
-No utiliza una base de datos ni procesa pagos reales. El registro y el inicio de sesión también son simulados.
+No utiliza una base de datos real ni procesa pagos reales.
 
-El código QR es demostrativo y no permite validar entradas reales.
+La autenticación administrativa es demostrativa.
+
+Los cambios almacenados en localStorage no se comparten entre dispositivos.
+
+El soporte offline depende de los recursos disponibles en caché.
