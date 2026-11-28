@@ -1,8 +1,8 @@
 
-import { createBrowserRouter } from 'react-router';
+import { createHashRouter } from 'react-router';
 import App from '../App';
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   { path: '/', element: <App /> }, //direccion de mi aplicacion path
   { path: '/eventos', element: <App /> }, //element componente en react
   { path: '/eventos/:id', element: <App /> }, //id evento especifico
@@ -15,8 +15,6 @@ const router = createBrowserRouter([
   { path: '/admin/inventario', element: <App /> },
   { path: '/admin/reportes', element: <App /> },
   { path: '*', element: <App /> } //* direccion que no existe mensaje de error
-], {
-  basename: import.meta.env.BASE_URL
-});
+  ]);
 
 export default router;
