@@ -6,10 +6,10 @@ import Admin from './pages/admin';
 import { eventos } from './data/events';
 import EventCard from './components/eventCard';
 import SeleccionBoletos from './pages/SeleccionBoletos';
-import Pago from './pages/Pago';
-import BoletoDigital from './pages/BoletoDigital';
-import Login from './pages/Login';
-import Registro from './pages/Registro';
+import Pago from './pages/pago';
+import BoletoDigital from './pages/boletoDigital';
+import Login from './pages/login';
+import Registro from './pages/registro';
 
 import './App.css';
 
