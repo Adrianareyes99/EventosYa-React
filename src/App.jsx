@@ -1,5 +1,8 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router';
+import { useAppContext } from './context/AppContext';
+import Admin from './pages/admin';
 import { eventos } from './data/events';
 import EventCard from './components/eventCard';
 import SeleccionBoletos from './pages/SeleccionBoletos';
@@ -7,92 +10,125 @@ import Pago from './pages/Pago';
 import BoletoDigital from './pages/BoletoDigital';
 import Login from './pages/Login';
 import Registro from './pages/Registro';
+
 import './App.css';
 
 function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Estado global compartido
+  const { state, dispatch } = useAppContext();
+  const { usuario, compra } = state;
+
+  // Inventario de eventos
+  const [listaEventos, setListaEventos] = useState(() => {
+    const guardados = localStorage.getItem('eventos');
+    return guardados ? JSON.parse(guardados) : eventos;
+  });
+
   const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
-  const [compra, setCompra] = useState(() => {
-  const compraGuardada = localStorage.getItem('compra');
-  return compraGuardada ? JSON.parse(compraGuardada) : null;
-});
-  const [pantalla, setPantalla] = useState(() => {
-  const compraGuardada = localStorage.getItem('compra');
-  return compraGuardada ? 'carrito' : 'eventos';
-});
-  const [usuario, setUsuario] = useState(() => {
-  return localStorage.getItem('usuario');
-});
+  const [pantalla, setPantalla] = useState('eventos');
 
-const [listaEventos, setListaEventos] = useState(() => {
-  const guardados = localStorage.getItem('eventos');
-  return guardados ? JSON.parse(guardados) : eventos;
-});
+  // Guardar inventario
+  useEffect(() => {
+    localStorage.setItem('eventos', JSON.stringify(listaEventos));
+  }, [listaEventos]);
 
-useEffect(() => {
-  if (usuario) {
-    localStorage.setItem('usuario', usuario);
-  } else {
-    localStorage.removeItem('usuario');
+  // Controlar las pantallas con las rutas
+  useEffect(() => {
+    const ruta = location.pathname;
+
+    if (ruta === '/' || ruta === '/eventos') {
+      setPantalla('eventos');
+    
+} else if (ruta === '/boletos') {
+  setPantalla('boleto');
+} else if (ruta === '/admin') {
+  setPantalla('admin');
+} else if (ruta.startsWith('/eventos/')) {
+} else if (ruta.startsWith('/eventos/')) {
+      const id = Number(ruta.split('/')[2]);
+      const encontrado = listaEventos.find(e => e.id === id);
+      setEventoSeleccionado(encontrado || null);
+      setPantalla('seleccion');
+    }
+  }, [location.pathname]);
+
+  // Navegación
+  function volverEventos() {
+    setEventoSeleccionado(null);
+    dispatch({ type: 'LIMPIAR_COMPRA' });
+    setPantalla('eventos');
+    navigate('/eventos');
   }
-}, [usuario]);
-
-useEffect(() => {
-  if (compra) {
-    localStorage.setItem('compra', JSON.stringify(compra));
-  } else {
-    localStorage.removeItem('compra');
-  }
-}, [compra]);
-
-useEffect(() => {
-  localStorage.setItem('eventos', JSON.stringify(listaEventos));
-}, [listaEventos]);
 
   function seleccionarEvento(evento) {
     setEventoSeleccionado(evento);
-    setCompra(null);
+    dispatch({ type: 'LIMPIAR_COMPRA' });
     setPantalla('seleccion');
+    navigate('/eventos/' + evento.id);
   }
 
-  function volverEventos() {
-    setEventoSeleccionado(null);
-    setCompra(null);
-    setPantalla('eventos');
-  }
-
+  // Guardar la compra en Context
   function continuarCarrito(datosCompra) {
-    setCompra(datosCompra);
+    dispatch({
+      type: 'GUARDAR_COMPRA',
+      payload: datosCompra
+    });
+
     setPantalla('carrito');
+    navigate('/carrito');
   }
 
-function confirmarPago() {
-  setListaEventos(listaEventos.map(evento => {
-    if (evento.id === compra.evento.id) {
-      return {
-        ...evento,
-        disponibles: evento.disponibles - compra.cantidad
-      };
-    }
+  function continuarPago() {
+    setPantalla('pago');
+    navigate('/checkout');
+  }
 
-    return evento;
-  }));
+  // Pago simulado e inventario
+  function confirmarPago() {
+    if (!compra || pantalla !== 'pago') return;
 
-  setPantalla('confirmacion');
-}
+    setPantalla('confirmacion');
 
+    setListaEventos(anteriores =>
+      anteriores.map(evento => {
+        if (evento.id === compra.evento.id) {
+          return {
+            ...evento,
+            disponibles: Math.max(
+              0,
+              evento.disponibles - compra.cantidad
+            )
+          };
+        }
+        return evento;
+      })
+    );
+  }
 
+  // Sesión con useReducer
   function iniciarSesion(correo) {
-    setUsuario(correo);
+    dispatch({
+      type: 'INICIAR_SESION',
+      payload: correo
+    });
     setPantalla('eventos');
+    navigate('/eventos');
   }
 
   function registrarUsuario(datos) {
-    setUsuario(datos.correo);
+    dispatch({
+      type: 'INICIAR_SESION',
+      payload: datos.correo
+    });
     setPantalla('eventos');
+    navigate('/eventos');
   }
 
   function cerrarSesion() {
-    setUsuario(null);
+    dispatch({ type: 'CERRAR_SESION' });
     volverEventos();
   }
 
@@ -117,10 +153,10 @@ function confirmarPago() {
         </div>
       </header>
 
+      {/* Inicio de sesión */}
       {pantalla === 'login' && (
         <>
           <Login onIngresar={iniciarSesion} />
-
           <div className="enlace-registro">
             <p>¿No tienes cuenta?</p>
             <button onClick={() => setPantalla('registro')}>
@@ -130,6 +166,7 @@ function confirmarPago() {
         </>
       )}
 
+      {/* Registro */}
       {pantalla === 'registro' && (
         <Registro
           onRegistrar={registrarUsuario}
@@ -137,13 +174,14 @@ function confirmarPago() {
         />
       )}
 
+      {/* Catálogo */}
       {pantalla === 'eventos' && (
         <main>
           <h2>Explorar más eventos</h2>
           <p>Descubre los mejores eventos de El Salvador.</p>
 
           <section className="eventos-grid">
-            {listaEventos.map((evento) => (
+            {listaEventos.map(evento => (
               <EventCard
                 key={evento.id}
                 evento={evento}
@@ -154,41 +192,75 @@ function confirmarPago() {
         </main>
       )}
 
+      {/* Seleccionar boletos */}
       {pantalla === 'seleccion' && (
-        <SeleccionBoletos
-          evento={eventoSeleccionado}
-          onVolver={volverEventos}
-          onContinuar={continuarCarrito}
-        />
+        eventoSeleccionado ? (
+          <SeleccionBoletos
+            evento={eventoSeleccionado}
+            onVolver={volverEventos}
+            onContinuar={continuarCarrito}
+          />
+        ) : (
+          <main>
+            <p>Evento no encontrado.</p>
+            <button onClick={volverEventos}>Volver</button>
+          </main>
+        )
       )}
 
-      {pantalla === 'carrito' && compra && (
+      {/* Carrito */}
+      {pantalla === 'carrito' && (
         <main>
-          <button onClick={() => setPantalla('seleccion')}>
-            ← Volver a selección
-          </button>
-
           <h2>Carrito de compra</h2>
-          <h3>{compra.evento.nombre}</h3>
-          <p>Zona: {compra.zona}</p>
-          <p>Cantidad: {compra.cantidad}</p>
-          <p>Precio unitario: ${compra.precioUnitario.toFixed(2)}</p>
-          <h2>Total: ${compra.total.toFixed(2)} USD</h2>
+          {compra ? (
+            <>
+              <h3>{compra.evento.nombre}</h3>
+              <p>Zona: {compra.zona}</p>
+              <p>Cantidad: {compra.cantidad}</p>
+              <p>Precio unitario: ${compra.precioUnitario.toFixed(2)}</p>
+              <h2>Total: ${compra.total.toFixed(2)} USD</h2>
 
-          <button onClick={() => setPantalla('pago')}>
-            Continuar al pago
-          </button>
+              <button onClick={() => {
+                setEventoSeleccionado(compra.evento);
+                setPantalla('seleccion');
+                navigate('/eventos/' + compra.evento.id);
+              }}>
+                Volver a selección
+              </button>
+
+              <button onClick={continuarPago}>
+                Continuar al pago
+              </button>
+            </>
+          ) : (
+            <>
+              <p>Tu carrito está vacío.</p>
+              <button onClick={volverEventos}>Explorar eventos</button>
+            </>
+          )}
         </main>
       )}
 
-      {pantalla === 'pago' && compra && (
-        <Pago
-          compra={compra}
-          onVolver={() => setPantalla('carrito')}
-          onConfirmar={confirmarPago}
-        />
+      {/* Pago */}
+      {pantalla === 'pago' && (
+        compra ? (
+          <Pago
+            compra={compra}
+            onVolver={() => {
+              setPantalla('carrito');
+              navigate('/carrito');
+            }}
+            onConfirmar={confirmarPago}
+          />
+        ) : (
+          <main>
+            <p>No tienes ninguna compra pendiente.</p>
+            <button onClick={volverEventos}>Ver eventos</button>
+          </main>
+        )
       )}
 
+      {/* Confirmación */}
       {pantalla === 'confirmacion' && compra && (
         <main>
           <h2>¡Compra realizada con éxito!</h2>
@@ -198,18 +270,46 @@ function confirmarPago() {
           <p>Cantidad: {compra.cantidad}</p>
           <p>Total: ${compra.total.toFixed(2)} USD</p>
 
-          <button onClick={() => setPantalla('boleto')}>
+          <button onClick={() => {
+            setPantalla('boleto');
+            navigate('/boletos');
+          }}>
             Ver mi boleto digital
           </button>
         </main>
       )}
 
-      {pantalla === 'boleto' && compra && (
-        <BoletoDigital
-          compra={compra}
-          onVolver={volverEventos}
-        />
+      {/* Boleto digital */}
+      {pantalla === 'boleto' && (
+        compra ? (
+          <BoletoDigital
+            compra={compra}
+            onVolver={volverEventos}
+          />
+        ) : (
+          <main>
+            <h2>Mis boletos</h2>
+            <p>No hay boletos para mostrar.</p>
+            <button onClick={volverEventos}>Explorar eventos</button>
+          </main>
+        )
       )}
+
+{/* Panel administrativo */}
+{pantalla === 'admin' && (
+  usuario === 'admin@eventosya.com' ? (
+    <Admin />
+  ) : (
+    <main>
+      <h2>Acceso restringido</h2>
+      <p>Solo el administrador puede entrar.</p>
+      <button onClick={volverEventos}>
+        Volver a eventos
+      </button>
+    </main>
+  )
+)}
+
     </div>
   );
 }

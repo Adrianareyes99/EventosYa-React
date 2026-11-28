@@ -253,3 +253,43 @@ main {
   border-radius: 5px;
   cursor: pointer;
 }
+
+
+/* Panel administrativo */
+
+.admin-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.admin-form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.admin-form button,
+.admin-tabla button {
+  padding: 10px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin: 3px;
+}
+
+.admin-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.admin-tabla th,
+.admin-tabla td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
